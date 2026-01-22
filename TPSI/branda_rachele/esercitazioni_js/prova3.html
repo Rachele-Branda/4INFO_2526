@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dino Chrome Clone Stabile</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f7f7f7;
+        font-family: "Courier New", Courier, monospace;
+      }
+      #game {
+        width: 600px;
+        height: 200px;
+        border-bottom: 2px solid #555;
+        position: relative;
+        background-color: white;
+      }
+
+      /* Stile del dinosauro (blocco grigio) */
+      #dino {
+        width: 60px;
+        height: 60px;
+        background-image: url("./dino.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: bottom center;
+        position: absolute;
+        bottom: 0;
+        left: 50px;
+      }
+
+      .jump {
+        animation: jump 0.5s linear;
+      }
+      @keyframes jump {
+        0% {
+          bottom: 0;
+        }
+        30% {
+          bottom: 100px;
+        }
+        70% {
+          bottom: 100px;
+        }
+        100% {
+          bottom: 0;
+        }
+      }
+
+      /* Stile del cactus (blocco verde) */
+      .obstacle {
+        position: absolute;
+        bottom: 0;
+        right: -40px;
+        width: 40px;
+        height: 60px;
+        background-image: url("./cacatus.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: bottom center;
+        animation-name: move;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes move {
+        0% {
+          right: -20px;
+        }
+        100% {
+          right: 100%;
+        }
+      }
+
+      #score {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        color: #555;
+        display: none;
+      }
+      #start-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        color: #555;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game">
+      <div id="score">00000</div>
+      <div id="dino"></div>
+      <div id="start-screen">PREMI SPAZIO PER INIZIARE</div>
+    </div>
+
+    <script>
+      const game = document.getElementById("game");
+      const dino = document.getElementById("dino");
+      const scoreElement = document.getElementById("score");
+      const startScreen = document.getElementById("start-screen");
+      let score = 0;
+      let gameSpeed = 1.5;
+      let isGameRunning = false;
+      let gameInterval;
+      let spawnTimeout;
+
+      function jump() {
+        if (!dino.classList.contains("jump")) {
+          dino.classList.add("jump");
+          setTimeout(() => dino.classList.remove("jump"), 500);
+        }
+      }
+
+      function startGame() {
+        if (isGameRunning) return;
+        isGameRunning = true;
+        startScreen.style.display = "none";
+        scoreElement.style.display = "block";
+        gameInterval = setInterval(gameLoop, 10);
+        createCactus();
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.code === "Space" || e.code === "ArrowUp") {
+          if (!isGameRunning) {
+            startGame();
+          } else {
+            jump();
+          }
+        }
+      });
+
+      function createCactus() {
+        if (!isGameRunning) return;
+        const obstacle = document.createElement("div");
+        obstacle.classList.add("obstacle");
+        obstacle.style.animationDuration = gameSpeed + "s";
+        game.appendChild(obstacle);
+
+        obstacle.addEventListener("animationend", () => {
+          if (obstacle.parentNode) {
+            obstacle.remove();
+          }
+        });
+
+        // Ritardo minimo di 1.2s per garantire che gli ostacoli non siano troppo vicini
+        spawnTimeout = setTimeout(createCactus, 1500 + Math.random() * 800);
+      }
+
+      function gameLoop() {
+        const dinoRect = dino.getBoundingClientRect();
+
+        document.querySelectorAll(".obstacle").forEach((obstacle) => {
+          const obstacleRect = obstacle.getBoundingClientRect();
+
+          if (
+            dinoRect.left < obstacleRect.right &&
+            dinoRect.right > obstacleRect.left &&
+            dinoRect.top < obstacleRect.bottom &&
+            dinoRect.bottom > obstacleRect.top
+          ) {
+            clearInterval(gameInterval);
+            clearTimeout(spawnTimeout);
+            isGameRunning = false;
+            alert("Game Over! Score: " + Math.floor(score));
+            location.reload();
+          }
+        });
+
+        score += 0.05;
+        scoreElement.innerHTML = Math.floor(score).toString().padStart(5, "0");
+
+        if (Math.floor(score) % 100 === 0 && score > 0.1) {
+          gameSpeed = Math.max(0.8, gameSpeed - 0.01);
+        }
+      }
+    </script>
+  </body>
+</html>

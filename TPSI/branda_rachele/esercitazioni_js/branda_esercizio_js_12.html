@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Esercizio JavaScript - Classe Automobile</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+      }
+      #output {
+        background-color: #fff;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        white-space: pre-wrap;
+        font-family: "Courier New", monospace;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .test-button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .test-button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🚗 Esercizio JavaScript - Classe Automobile</h1>
+    <p style="text-align: center; color: #666">
+      Utilizzando Object Literals per creare una classe Automobile con 5
+      attributi e 3 metodi
+    </p>
+
+    <button class="test-button" onclick="eseguiEsercizio()">
+      Esegui Esercizio
+    </button>
+
+    <div id="output">Clicca il pulsante per eseguire l'esercizio...</div>
+
+    <script>
+      // Realizzazione di un programma in JS che:
+      // Usando gli Object Literals implementa una classe automobile con 5 attributi e 3 metodi a vostra scelta
+      // Istanzi 5 oggetti di tipo Automobile e per ciascuno richiamare i 3 metodi
+
+      // Definizione del template per la classe Automobile usando Object Literal
+      function Automobile(marca, modello, colore, anno, prezzo) {
+        return {
+          // 5 attributi
+          marca: marca,
+          modello: modello,
+          colore: colore,
+          anno: anno,
+          prezzo: prezzo,
+
+          // 3 metodi
+          avvia: function () {
+            console.log(
+              `🚗 ${this.marca} ${this.modello} del ${this.anno} si sta avviando...`
+            );
+            return `Avviata ${this.marca} ${this.modello}`;
+          },
+
+          frena: function () {
+            console.log(
+              `🛑 ${this.marca} ${this.modello} di colore ${this.colore} sta frenando!`
+            );
+            return `Frenata ${this.marca} ${this.modello}`;
+          },
+
+          mostraInfo: function () {
+            const info = `
+=== INFORMAZIONI AUTOMOBILE ===
+Marca: ${this.marca}
+Modello: ${this.modello}
+Colore: ${this.colore}
+Anno: ${this.anno}
+Prezzo: €${this.prezzo.toLocaleString()}
+================================`;
+            console.log(info);
+            return info;
+          },
+        };
+      }
+
+      // Funzione principale che esegue tutto l'esercizio
+      function eseguiEsercizio() {
+        let output = "";
+        const log = (message) => {
+          output += message + "\n";
+          console.log(message);
+        };
+
+        // Istanziazione di 5 oggetti di tipo Automobile
+        log("=== CREAZIONE E TEST DI 5 AUTOMOBILE ===\n");
+
+        const auto1 = Automobile(
+          "Ferrari",
+          "F8 Tributo",
+          "Rosso",
+          2023,
+          280000
+        );
+        const auto2 = Automobile("BMW", "M3", "Blu Metallizzato", 2022, 95000);
+        const auto3 = Automobile("Tesla", "Model S", "Bianco", 2024, 120000);
+        const auto4 = Automobile("Audi", "RS6 Avant", "Nero", 2023, 135000);
+        const auto5 = Automobile(
+          "Lamborghini",
+          "Huracán",
+          "Giallo",
+          2024,
+          220000
+        );
+
+        // Array per tenere traccia di tutte le auto
+        const automobili = [auto1, auto2, auto3, auto4, auto5];
+
+        // Chiamata dei 3 metodi per ciascuna automobile
+        automobili.forEach((auto, index) => {
+          log(`=== AUTOMOBILE ${index + 1} ===`);
+          auto.mostraInfo();
+          auto.avvia();
+          auto.frena();
+          log("------------------------");
+        });
+
+        // Funzione aggiuntiva per dimostrare il funzionamento
+        log("\n=== DIMOSTRAZIONE METODI INDIVIDUALI ===");
+
+        // Test di metodi individuali
+        log("\n1. Test avviamento singola auto:");
+        log(auto1.avvia());
+
+        log("\n2. Test frenata singola auto:");
+        log(auto3.frena());
+
+        log("\n3. Test informazioni singola auto:");
+        auto5.mostraInfo();
+        log(auto5.mostraInfo());
+
+        // Calcolo statistiche
+        log("\n=== STATISTICHE ===");
+        const prezzi = automobili.map((auto) => auto.prezzo);
+        const prezzoMedio =
+          prezzi.reduce((sum, prezzo) => sum + prezzo, 0) / prezzi.length;
+        const autoPiuCostosa = automobili.reduce((max, auto) =>
+          auto.prezzo > max.prezzo ? auto : max
+        );
+
+        log(`Prezzo medio: €${prezzoMedio.toLocaleString()}`);
+        log(
+          `Auto più costosa: ${autoPiuCostosa.marca} ${
+            autoPiuCostosa.modello
+          } - €${autoPiuCostosa.prezzo.toLocaleString()}`
+        );
+
+        log("\n=== ESERCIZIO COMPLETATO ===");
+
+        // Mostra l'output nella pagina
+        document.getElementById("output").textContent = output;
+      }
+
+      // Esegui automaticamente l'esercizio al caricamento della pagina
+      window.onload = function () {
+        setTimeout(eseguiEsercizio, 500);
+      };
+    </script>
+  </body>
+</html>
